@@ -3,28 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDF Clip - 必要なページだけ抽出</title>
-  <meta name="description" content="PDFから必要なページだけを選んで、端末内だけで安全に抽出・ダウンロードできる無料ツールです。" />
+  <title>PDF Clip｜PDFの分割・ページ抽出を無料で簡単に</title>
+  <meta name="description" content="PDFから必要なページだけを選んで、別のPDFとして保存できる無料ツール。PDFの分割・ページ抽出・不要ページの除外をブラウザで簡単に行えます。インストール・登録不要。" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#5b4bf2" />
+  <link rel="canonical" href="https://makiabe.github.io/PDFClip/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PDF Clip｜PDFの分割・ページ抽出を無料で簡単に" />
+  <meta property="og:description" content="PDFから必要なページだけを選んで、別のPDFとして保存。無料・インストール不要・登録不要で、PDFはブラウザ内で処理します。" />
+  <meta property="og:url" content="https://makiabe.github.io/PDFClip/" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta name="twitter:card" content="summary" />
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"PDF Clip",
+    "url":"https://makiabe.github.io/PDFClip/",
+    "applicationCategory":"UtilitiesApplication",
+    "operatingSystem":"Any",
+    "browserRequirements":"JavaScript対応ブラウザ",
+    "isAccessibleForFree":true,
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},
+    "description":"PDFから必要なページだけを選択し、新しいPDFとして保存できる無料のブラウザツールです。PDFの分割、ページ抽出、不要ページの除外に対応しています。",
+    "featureList":["PDF分割","PDFページ抽出","不要ページの除外","ページ範囲指定","奇数・偶数ページ選択","ブラウザ内処理","インストール不要","登録不要"]
+  }
+  </script>
   <link rel="stylesheet" href="./style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs" type="module"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
   <header class="app-header">
     <div class="brand">
-      <div class="logo">✂</div>
+      <div class="logo" aria-hidden="true">PDF</div>
       <div>
         <h1>PDF Clip</h1>
-        <p>必要なページだけを、安全に書き出し</p>
+        <p>PDFから必要なページだけを選んで、別のPDFとして保存</p>
       </div>
     </div>
-    <div class="privacy-badge">🛡 サーバー送信なし・端末内で完結</div>
+    <div class="header-actions">
+      <div class="privacy-badge">サーバー送信なし・端末内で完結</div>
+      <button id="helpButton" class="help-button" type="button" aria-label="PDF Clipについて" title="使い方を見る">
+        <span aria-hidden="true">?</span>
+      </button>
+    </div>
   </header>
 
   <main class="page">
+    <section class="seo-intro" aria-labelledby="mainTitle">
+      <h2 id="mainTitle">PDFから必要なページだけを選んで、別のPDFとして保存</h2>
+      <p>PDFのページを選択して、必要なページだけを新しいPDFとして保存できる無料ツールです。PDFの分割・ページ抽出・不要ページの除外をブラウザから簡単に行えます。</p>
+      <div class="benefits" aria-label="PDF Clipの特徴">
+        <span>無料</span><span>インストール不要</span><span>登録不要</span><span>サーバー送信なし</span>
+      </div>
+    </section>
     <section class="upload-card" id="dropZone">
       <input type="file" id="fileInput" accept="application/pdf" hidden />
-      <div class="upload-icon">PDF</div>
+      <div class="upload-icon" aria-hidden="true">PDF</div>
       <div class="upload-copy">
         <h2>PDFをドロップ</h2>
         <p>またはクリックしてPDFを選択</p>
@@ -35,9 +71,9 @@
     <section id="workspace" class="workspace hidden">
       <div class="file-toolbar card">
         <div class="file-meta">
-          <div class="file-icon">📄</div>
+          <div class="file-icon" aria-hidden="true">PDF</div>
           <div>
-            <h2 id="fileName">sample.pdf</h2>
+            <h2 id="fileName">選択したPDF</h2>
             <p><span id="pageCount">0</span>ページ中 <strong id="selectedCount">0</strong>ページ選択中</p>
           </div>
         </div>
@@ -49,26 +85,87 @@
           <button data-action="even">偶数</button>
           <button data-action="invert">反転</button>
           <div class="range-row">
-            <input id="rangeInput" type="text" placeholder="例: 1-3, 5" />
+            <input id="rangeInput" type="text" placeholder="例: 1-3, 5" aria-label="抽出するページ番号" />
             <button id="rangeButton">指定</button>
           </div>
         </div>
 
-        <button id="downloadButton" class="download-btn" disabled>⬇ <span id="downloadLabel">ページを選択してください</span></button>
+        <div class="download-actions">
+          <button id="downloadButton" class="download-btn" disabled><span id="downloadLabel">ページを選択してください</span></button>
+          <button id="splitButton" class="split-btn" disabled>選択ページを1ページずつ保存</button>
+        </div>
       </div>
 
       <div class="pages-card card">
         <div class="section-head">
-          <h3>▦ ページ一覧 <span>（クリックで選択 / 選択解除）</span></h3>
-          <p>虫眼鏡で拡大プレビュー</p>
+          <h3>ページ一覧 <span>（クリックで選択 / 選択解除）</span></h3>
+          <p>拡大ボタンでプレビュー</p>
         </div>
         <div id="pageGrid" class="page-grid"></div>
       </div>
     </section>
+    <section class="seo-content">
+      <div class="info-card">
+        <h2>PDF Clipでできること</h2>
+        <p>PDF Clipは、PDFを開いてページを確認し、必要なページだけを選んで新しいPDFとして保存するためのシンプルなPDF分割・ページ抽出ツールです。「3、5、8ページだけ保存したい」「不要なページを除いてPDFを作り直したい」といった作業をすぐに行えます。</p>
+        <div class="feature-grid">
+          <div><h3>必要なページだけ抽出</h3><p>サムネイルを見ながら残したいページをクリックして選択できます。</p></div>
+          <div><h3>ページ番号で指定</h3><p>「1-3, 5, 8-10」のようにページ番号や範囲をまとめて指定できます。</p></div>
+          <div><h3>奇数・偶数を一括選択</h3><p>奇数ページ、偶数ページ、全ページの選択や選択状態の反転に対応しています。</p></div>
+          <div><h3>ブラウザ内でPDFを処理</h3><p>PDFファイルを外部サーバーへ送信せず、ブラウザ内でページ抽出とPDF生成を行います。</p></div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h2>使い方</h2>
+        <ol class="usage-list">
+          <li><b>PDFを選択</b><span>PDFファイルをドラッグ＆ドロップするか、「PDFを選択」から開きます。</span></li>
+          <li><b>必要なページを選択</b><span>ページ一覧から、新しいPDFに残したいページを選びます。</span></li>
+          <li><b>PDFとして保存</b><span>選択したページだけをまとめた新しいPDFをダウンロードします。</span></li>
+        </ol>
+      </div>
+
+      <div class="info-card faq">
+        <h2>よくある質問</h2>
+        <details><summary>無料でPDFのページを分割できますか？</summary><p>はい。PDF Clipは無料で利用できます。必要なページを選択し、そのページだけを新しいPDFとして保存できます。</p></details>
+        <details><summary>PDFから特定のページだけを抽出できますか？</summary><p>はい。サムネイルからページを選ぶか、「1-3, 5」のようにページ番号を指定して抽出できます。</p></details>
+        <details><summary>PDFの不要なページを削除できますか？</summary><p>残したいページだけを選択して新しいPDFとして保存することで、不要なページを除外できます。元のPDFファイル自体は変更しません。</p></details>
+        <details><summary>PDFを1ページだけ保存できますか？</summary><p>はい。保存したい1ページだけを選択して、新しいPDFとしてダウンロードできます。</p></details>
+        <details><summary>PDFを1ページずつ分割して保存できますか？</summary><p>はい。分割したいページを選択し、「選択ページを1ページずつ保存」を押すと、各ページを個別のPDFファイルとしてまとめてダウンロードできます。</p></details>
+        <details><summary>PDFはサーバーにアップロードされますか？</summary><p>いいえ。PDFの読み込み、ページ表示、抽出、新しいPDFの生成はブラウザ内で行います。PDFファイルをPDF Clipのサーバーへアップロードする処理はありません。</p></details>
+        <details><summary>インストールや会員登録は必要ですか？</summary><p>必要ありません。対応ブラウザからそのまま利用でき、アカウント登録も不要です。</p></details>
+      </div>
+    </section>
   </main>
 
+  <div id="helpDialog" class="help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="help-dialog">
+    <button id="closeHelp" class="close-preview" aria-label="説明を閉じる">×</button>
+    <div class="help-heading">
+      <div class="help-heading-icon" aria-hidden="true">PDF</div>
+      <div>
+        <h2 id="helpTitle">PDF Clipについて</h2>
+        <p class="help-lead">必要なページだけを、かんたんに切り出せます。</p>
+      </div>
+    </div>
+    <div class="help-section">
+      <h3>使い方</h3>
+      <div class="help-steps">
+        <div><b>1</b><span>PDFを選択</span></div>
+        <div><b>2</b><span>残したいページを選択</span></div>
+        <div><b>3</b><span>新しいPDFとして保存</span></div>
+      </div>
+    </div>
+    <div class="help-section help-safety">
+      <h3>ファイルの取り扱い</h3>
+      <p>PDFの処理はすべてこのブラウザ内で行います。PDFファイルをサーバーへ送信することはありません。</p>
+    </div>
+    <p class="help-note">インストール・アカウント登録は不要です。</p>
+    </div>
+  </div>
+
   <dialog id="previewDialog">
-    <button id="closePreview" class="close-preview">×</button>
+    <button id="closePreview" class="close-preview" aria-label="プレビューを閉じる">×</button>
     <canvas id="previewCanvas"></canvas>
     <div id="previewCaption"></div>
   </dialog>

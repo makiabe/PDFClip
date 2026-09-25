@@ -26,7 +26,7 @@
     "isAccessibleForFree":true,
     "offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},
     "description":"PDFから必要なページだけを選択し、新しいPDFとして保存できる無料のブラウザツールです。PDFの分割、ページ抽出、不要ページの除外に対応しています。",
-    "featureList":["PDF分割","PDFページ抽出","不要ページの除外","ページ範囲指定","奇数・偶数ページ選択","ブラウザ内処理","インストール不要","登録不要"]
+    "featureList":["PDF分割","PDFページ抽出","不要ページ削除","PDF回転","PDFをJPGに変換","PDFをPNGに変換","ページ範囲指定","奇数・偶数ページ選択","ブラウザ内処理","インストール不要","登録不要"]
   }
   </script>
   <link rel="stylesheet" href="./style.css" />
@@ -53,7 +53,7 @@
   <main class="page">
     <section class="seo-intro" aria-labelledby="mainTitle">
       <h2 id="mainTitle">PDFから必要なページだけを選んで、別のPDFとして保存</h2>
-      <p>PDFのページを選択して、必要なページだけを新しいPDFとして保存できる無料ツールです。PDFの分割・ページ抽出・不要ページの除外をブラウザから簡単に行えます。</p>
+      <p>PDFのページを選択して、必要なページだけを新しいPDFとして保存できる無料ツールです。PDFの分割・ページ抽出・不要ページの削除・回転・JPG/PNG変換をブラウザから簡単に行えます。</p>
       <div class="benefits" aria-label="PDF Clipの特徴">
         <span>無料</span><span>インストール不要</span><span>登録不要</span><span>サーバー送信なし</span>
       </div>
@@ -93,6 +93,15 @@
         <div class="download-actions">
           <button id="downloadButton" class="download-btn" disabled><span id="downloadLabel">ページを選択してください</span></button>
           <button id="splitButton" class="split-btn" disabled>選択ページを1ページずつ保存</button>
+          <button id="deleteButton" class="tool-btn danger-tool" disabled>選択ページを削除して保存</button>
+          <div class="tool-row">
+            <button id="rotateLeftButton" class="tool-btn" disabled>↶ 左90°回転</button>
+            <button id="rotateRightButton" class="tool-btn" disabled>↷ 右90°回転</button>
+          </div>
+          <div class="tool-row">
+            <button id="jpgButton" class="tool-btn" disabled>JPGに変換</button>
+            <button id="pngButton" class="tool-btn" disabled>PNGに変換</button>
+          </div>
         </div>
       </div>
 
@@ -112,7 +121,10 @@
           <div><h3>必要なページだけ抽出</h3><p>サムネイルを見ながら残したいページをクリックして選択できます。</p></div>
           <div><h3>ページ番号で指定</h3><p>「1-3, 5, 8-10」のようにページ番号や範囲をまとめて指定できます。</p></div>
           <div><h3>奇数・偶数を一括選択</h3><p>奇数ページ、偶数ページ、全ページの選択や選択状態の反転に対応しています。</p></div>
-          <div><h3>ブラウザ内でPDFを処理</h3><p>PDFファイルを外部サーバーへ送信せず、ブラウザ内でページ抽出とPDF生成を行います。</p></div>
+          <div><h3>PDFを回転して保存</h3><p>選択したページを左・右へ90°ずつ回転し、その状態でPDFとして保存できます。</p></div>
+          <div><h3>不要ページを削除</h3><p>削除したいページを選択し、残りのページだけで新しいPDFを作成できます。</p></div>
+          <div><h3>JPG / PNGに一括変換</h3><p>選択したPDFページを画像に変換します。複数ページの場合はZIPにまとめてダウンロードします。</p></div>
+          <div><h3>ブラウザ内でPDFを処理</h3><p>PDFファイルを外部サーバーへ送信せず、ブラウザ内でページ抽出・変換・PDF生成を行います。</p></div>
         </div>
       </div>
 

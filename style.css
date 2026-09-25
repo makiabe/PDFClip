@@ -207,3 +207,9 @@ body{background:#f8fafc;color:#1e293b}
 .help-button{border-color:#cbd5e1!important;color:#64748b!important}
 @media(max-width:900px){.feature-grid{grid-template-columns:repeat(2,1fr)}.seo-intro h2{font-size:34px}}
 @media(max-width:700px){.app-header{padding:0 14px}.page{padding:0 14px 40px}.seo-intro{padding:32px 4px 26px}.seo-intro h2{font-size:27px}.seo-intro p{font-size:14px}.upload-card{min-height:290px;padding:36px 18px}.feature-grid{grid-template-columns:1fr}.info-card{padding:48px 18px}.info-card h2{font-size:23px}.seo-content{margin:0 -14px}.usage-list{grid-template-columns:1fr}}
+
+.tool-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tool-btn{min-height:40px;padding:9px 10px;border:1px solid #d8ddea;border-radius:10px;background:#fff;color:#475569;font-size:12px;font-weight:700}
+.tool-btn:hover:not(:disabled){background:#f8fafc;border-color:#a5b4fc;color:#4338ca}
+.tool-btn:disabled{opacity:.42;cursor:not-allowed}
+.danger-tool{color:#be123c;border-color:#fecdd3}.danger-tool:hover:not(:disabled){background:#fff1f2;border-color:#fda4af;color:#9f1239}

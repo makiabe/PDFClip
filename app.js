@@ -16,6 +16,11 @@ const rangeButton = document.querySelector("#rangeButton");
 const downloadButton = document.querySelector("#downloadButton");
 const downloadLabel = document.querySelector("#downloadLabel");
 const splitButton = document.querySelector("#splitButton");
+const deleteButton = document.querySelector("#deleteButton");
+const rotateLeftButton = document.querySelector("#rotateLeftButton");
+const rotateRightButton = document.querySelector("#rotateRightButton");
+const jpgButton = document.querySelector("#jpgButton");
+const pngButton = document.querySelector("#pngButton");
 const previewDialog = document.querySelector("#previewDialog");
 const previewCanvas = document.querySelector("#previewCanvas");
 const previewCaption = document.querySelector("#previewCaption");
@@ -25,6 +30,7 @@ let sourceFile = null;
 let sourceBytes = null;
 let pdf = null;
 let selectedPages = new Set();
+const rotations = new Map();
 
 chooseButton.addEventListener("click", () => fileInput.click());
 dropZone.addEventListener("click", (e) => {
@@ -55,6 +61,11 @@ rangeButton.addEventListener("click", applyRange);
 rangeInput.addEventListener("keydown", e => { if (e.key === "Enter") applyRange(); });
 downloadButton.addEventListener("click", downloadSelection);
 splitButton.addEventListener("click", downloadPagesSeparately);
+deleteButton.addEventListener("click", deleteSelectedPages);
+rotateLeftButton.addEventListener("click", () => rotateSelected(-90));
+rotateRightButton.addEventListener("click", () => rotateSelected(90));
+jpgButton.addEventListener("click", () => exportImages("jpeg"));
+pngButton.addEventListener("click", () => exportImages("png"));
 closePreview.addEventListener("click", () => previewDialog.close());
 previewDialog.addEventListener("click", e => {
   if (e.target === previewDialog) previewDialog.close();
@@ -67,6 +78,7 @@ async function loadPdf(file) {
     pdf = await pdfjsLib.getDocument({ data: sourceBytes.slice() }).promise;
 
     selectedPages = new Set();
+    rotations.clear();
     fileNameEl.textContent = file.name;
     pageCountEl.textContent = pdf.numPages;
     pageGrid.innerHTML = "";
@@ -107,9 +119,10 @@ async function loadPdf(file) {
 
 async function renderThumb(pageNumber, canvas) {
   const page = await pdf.getPage(pageNumber);
-  const raw = page.getViewport({ scale: 1 });
+  const extraRotation = rotations.get(pageNumber) || 0;
+  const raw = page.getViewport({ scale: 1, rotation: normalizeRotation(page.rotate + extraRotation) });
   const targetWidth = 150;
-  const viewport = page.getViewport({ scale: targetWidth / raw.width });
+  const viewport = page.getViewport({ scale: targetWidth / raw.width, rotation: normalizeRotation(page.rotate + extraRotation) });
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.floor(viewport.width * dpr);
   canvas.height = Math.floor(viewport.height * dpr);
@@ -185,6 +198,11 @@ function updateSelectionUI() {
   });
   downloadButton.disabled = selectedPages.size === 0;
   splitButton.disabled = selectedPages.size === 0;
+  deleteButton.disabled = selectedPages.size === 0 || selectedPages.size === pdf?.numPages;
+  rotateLeftButton.disabled = selectedPages.size === 0;
+  rotateRightButton.disabled = selectedPages.size === 0;
+  jpgButton.disabled = selectedPages.size === 0;
+  pngButton.disabled = selectedPages.size === 0;
   downloadLabel.textContent = selectedPages.size
     ? `${selectedPages.size}ページを抽出してダウンロード`
     : "ページを選択してください";
@@ -192,11 +210,12 @@ function updateSelectionUI() {
 
 async function showPreview(n) {
   const page = await pdf.getPage(n);
-  const raw = page.getViewport({ scale: 1 });
+  const extraRotation = rotations.get(n) || 0;
+  const raw = page.getViewport({ scale: 1, rotation: normalizeRotation(page.rotate + extraRotation) });
   const maxWidth = Math.min(window.innerWidth * .82, 900);
   const maxHeight = window.innerHeight * .75;
   const scale = Math.min(maxWidth/raw.width, maxHeight/raw.height);
-  const viewport = page.getViewport({ scale });
+  const viewport = page.getViewport({ scale, rotation: normalizeRotation(page.rotate + extraRotation) });
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   previewCanvas.width = Math.floor(viewport.width*dpr);
   previewCanvas.height = Math.floor(viewport.height*dpr);
@@ -220,7 +239,12 @@ async function downloadSelection() {
     const out = await PDFDocument.create();
     const indices = [...selectedPages].sort((a,b)=>a-b).map(n => n - 1);
     const copied = await out.copyPages(src, indices);
-    copied.forEach(page => out.addPage(page));
+    copied.forEach((page,i) => {
+      const n = [...selectedPages].sort((a,b)=>a-b)[i];
+      const angle = rotations.get(n) || 0;
+      if (angle) page.setRotation(PDFLib.degrees(normalizeRotation(page.getRotation().angle + angle)));
+      out.addPage(page);
+    });
     const result = await out.save();
     const blob = new Blob([result], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
@@ -296,5 +320,89 @@ async function downloadPagesSeparately() {
   } finally {
     splitButton.disabled = selectedPages.size === 0;
     splitButton.textContent = "選択ページを1ページずつ保存";
+  }
+}
+
+function normalizeRotation(value) {
+  return ((value % 360) + 360) % 360;
+}
+
+async function rotateSelected(delta) {
+  if (!pdf || !selectedPages.size) return;
+  for (const n of selectedPages) {
+    rotations.set(n, normalizeRotation((rotations.get(n) || 0) + delta));
+    const card = document.querySelector(`.page-card[data-page="${n}"]`);
+    const canvas = card?.querySelector("canvas");
+    if (canvas) await renderThumb(n, canvas);
+  }
+}
+
+async function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+async function deleteSelectedPages() {
+  if (!sourceBytes || !selectedPages.size || selectedPages.size >= pdf.numPages) return;
+  try {
+    deleteButton.disabled = true;
+    deleteButton.textContent = "PDFを作成中…";
+    const src = await PDFDocument.load(sourceBytes);
+    const out = await PDFDocument.create();
+    const keep = [];
+    for (let n=1; n<=src.getPageCount(); n++) if (!selectedPages.has(n)) keep.push(n);
+    const copied = await out.copyPages(src, keep.map(n=>n-1));
+    copied.forEach((page,i) => {
+      const angle = rotations.get(keep[i]) || 0;
+      if (angle) page.setRotation(PDFLib.degrees(normalizeRotation(page.getRotation().angle + angle)));
+      out.addPage(page);
+    });
+    const bytes = await out.save();
+    await saveBlob(new Blob([bytes],{type:"application/pdf"}), `${sourceFile.name.replace(/\.pdf$/i,"")}_deleted.pdf`);
+  } catch(e) {
+    console.error(e); alert("ページ削除後のPDF生成に失敗しました。");
+  } finally {
+    deleteButton.textContent = "選択ページを削除して保存";
+    updateSelectionUI();
+  }
+}
+
+async function exportImages(format) {
+  if (!pdf || !selectedPages.size) return;
+  const button = format === "jpeg" ? jpgButton : pngButton;
+  const ext = format === "jpeg" ? "jpg" : "png";
+  try {
+    button.disabled = true;
+    button.textContent = "画像を作成中…";
+    const pages = [...selectedPages].sort((a,b)=>a-b);
+    const zip = new JSZip();
+    const base = sourceFile.name.replace(/\.pdf$/i,"");
+    const digits = String(pdf.numPages).length;
+    let singleBlob = null, singleName = "";
+
+    for (const n of pages) {
+      const page = await pdf.getPage(n);
+      const extra = rotations.get(n) || 0;
+      const viewport = page.getViewport({scale:2, rotation: normalizeRotation(page.rotate + extra)});
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.ceil(viewport.width); canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext("2d");
+      if (format === "jpeg") { ctx.fillStyle="#fff"; ctx.fillRect(0,0,canvas.width,canvas.height); }
+      await page.render({canvasContext:ctx,viewport}).promise;
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, `image/${format}`, format==="jpeg" ? .92 : undefined));
+      const name = `${base}_page_${String(n).padStart(digits,"0")}.${ext}`;
+      if (pages.length === 1) { singleBlob=blob; singleName=name; }
+      else zip.file(name, blob);
+    }
+    if (pages.length === 1) await saveBlob(singleBlob,singleName);
+    else await saveBlob(await zip.generateAsync({type:"blob"}), `${base}_${ext}_${pages.length}pages.zip`);
+  } catch(e) {
+    console.error(e); alert("画像への変換に失敗しました。");
+  } finally {
+    button.textContent = format === "jpeg" ? "JPGに変換" : "PNGに変換";
+    updateSelectionUI();
   }
 }

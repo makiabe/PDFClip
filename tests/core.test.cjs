@@ -1,0 +1,31 @@
+const assert = require('node:assert/strict');
+const C = require('../core.js');
+let count=0;
+function test(name, fn){fn(); console.log('PASS '+name); count++}
+const sorted = s => [...s].sort((a,b)=>a-b);
+test('ordinary range',()=>assert.deepEqual(sorted(C.parseRange('1-3, 5, 8',8)),[1,2,3,5,8]));
+test('full-width input',()=>assert.deepEqual(sorted(C.parseRange('１〜３、５',8)),[1,2,3,5]));
+test('reverse range',()=>assert.deepEqual(sorted(C.parseRange('5-3',8)),[3,4,5]));
+test('duplicates sorted',()=>assert.deepEqual(sorted(C.parseRange('3,1,3, 2',8)),[1,2,3]));
+test('spaces supported',()=>assert.deepEqual(sorted(C.parseRange('1 3 5',8)),[1,3,5]));
+for(const value of ['','0','9','1,','3x','1--3','-1','2.5','1-9','9007199254740993'])test('invalid '+JSON.stringify(value),()=>assert.throws(()=>C.parseRange(value,8)));
+test('normalize left',()=>assert.equal(C.normalizeRotation(-90),270));
+test('normalize full',()=>assert.equal(C.normalizeRotation(450),90));
+test('output order',()=>assert.deepEqual(C.outputPages(new Set([8,3,5]),8,false),[3,5,8]));
+test('delete excludes checked',()=>assert.deepEqual(C.outputPages(new Set([1,3]),5,true),[2,4,5]));
+test('mode switch preserves output',()=>{let a=new Set([1,3]);assert.deepEqual(C.outputPages(a,5,false),C.outputPages(C.complement(a,5),5,true))});
+test('format ranges',()=>assert.equal(C.formatRanges([1,2,3,5,6,9]),'1-3, 5-6, 9'));
+test('unsafe filename',()=>assert.equal(C.safeBase('../a/b.pdf'),'_a_b'));
+test('reserved filename',()=>assert.equal(C.safeBase('CON.pdf'),'document'));
+const opts={name:'テスト.pdf',pages:[1,3,5],total:12,formats:['pdf'],pdfMode:'merged'};
+test('merge PDF plan',()=>{const p=C.planExports(opts);assert.equal(p.entries.length,1);assert.equal(p.zipped,false);assert.deepEqual(p.entries[0].pages,[1,3,5])});
+test('split PDF plan',()=>{const p=C.planExports({...opts,pdfMode:'split'});assert.equal(p.entries.length,3);assert.equal(p.zipped,true);assert.equal(p.entries[1].name,'テスト_page_03.pdf')});
+test('single JPG',()=>{const p=C.planExports({...opts,pages:[5],formats:['jpg']});assert.equal(p.zipped,false);assert.equal(p.entries[0].name,'テスト_page_05.jpg')});
+test('multi JPG',()=>assert.equal(C.planExports({...opts,formats:['jpg']}).entries.length,3));
+test('multi PNG',()=>assert.equal(C.planExports({...opts,formats:['png']}).entries.length,3));
+test('all formats combined',()=>{const p=C.planExports({...opts,formats:['pdf','jpg','png']});assert.equal(p.entries.length,7);assert.ok(p.entries[0].name.startsWith('pdf/'));assert.ok(p.entries[3].name.startsWith('jpg/'))});
+test('all split formats',()=>assert.equal(C.planExports({...opts,pdfMode:'split',formats:['pdf','jpg','png']}).entries.length,9));
+test('empty selection',()=>assert.throws(()=>C.planExports({...opts,pages:[]})));
+test('empty format',()=>assert.throws(()=>C.planExports({...opts,formats:[]})));
+test('all deleted',()=>assert.throws(()=>C.planExports({...opts,deleting:true,pages:[]})));
+console.log(`${count} tests passed.`)

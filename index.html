@@ -1,223 +1,122 @@
-<!doctype html>
-<html lang="ja">
+<!DOCTYPE html>
+
+<html data-theme="light" lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDF Clip｜PDFの分割・ページ抽出を無料で簡単に</title>
-  <meta name="description" content="PDFから必要なページだけを選んで、別のPDFとして保存できる無料ツール。PDFの分割・ページ抽出・不要ページの除外をブラウザで簡単に行えます。インストール・登録不要。" />
-  <meta name="robots" content="index,follow,max-image-preview:large" />
-  <meta name="theme-color" content="#5b4bf2" />
-  <link rel="canonical" href="https://makiabe.github.io/PDFClip/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="PDF Clip｜PDFの分割・ページ抽出を無料で簡単に" />
-  <meta property="og:description" content="PDFから必要なページだけを選んで、別のPDFとして保存。無料・インストール不要・登録不要で、PDFはブラウザ内で処理します。" />
-  <meta property="og:url" content="https://makiabe.github.io/PDFClip/" />
-  <meta property="og:locale" content="ja_JP" />
-  <meta name="twitter:card" content="summary" />
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"WebApplication",
-    "name":"PDF Clip",
-    "url":"https://makiabe.github.io/PDFClip/",
-    "applicationCategory":"UtilitiesApplication",
-    "operatingSystem":"Any",
-    "browserRequirements":"JavaScript対応ブラウザ",
-    "isAccessibleForFree":true,
-    "offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},
-    "description":"PDFから必要なページだけを選択し、新しいPDFとして保存できる無料のブラウザツールです。PDFの分割、ページ抽出、不要ページの除外に対応しています。",
-    "featureList":["PDF分割","PDFページ抽出","不要ページ削除","PDF回転","PDFをJPGに変換","PDFをPNGに変換","ページ範囲指定","奇数・偶数ページ選択","ブラウザ内処理","インストール不要","登録不要"]
-  }
-  </script>
-  <link rel="stylesheet" href="./style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>PDF Clip｜PDF分割・ページ抽出・回転・画像変換を無料で</title>
+<meta content="PDFから必要なページだけを選んで、別のPDFとして保存。分割・回転・不要ページ削除・JPG/PNGへの一括変換に対応する無料ツールです。登録・インストール不要、PDFはブラウザ内で処理します。" name="description"/>
+<meta content="index,follow" name="robots"/>
+<meta content="#f4f8ff" name="theme-color"/>
+<meta content="no-referrer" name="referrer"/>
+<meta content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src 'self' data: blob: https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'none'" http-equiv="Content-Security-Policy"/>
+<link href="https://makiabe.github.io/PDFClip/" rel="canonical"/>
+<meta content="website" property="og:type"/>
+<meta content="ja_JP" property="og:locale"/>
+<meta content="PDF Clip" property="og:site_name"/>
+<meta content="PDF Clip｜PDFから必要なページだけを選んで保存" property="og:title"/>
+<meta content="無料・登録不要・ブラウザで完結。PDFの分割・回転・削除・JPG/PNG変換をかんたんに。" property="og:description"/>
+<meta content="https://makiabe.github.io/PDFClip/" property="og:url"/>
+<meta content="summary" name="twitter:card"/>
+<link href="./favicon.png?v=cat-20260926" rel="icon" type="image/png" sizes="32x32"/>
+<link as="image" href="./assets/hero-scene.webp" rel="preload"/>
+<link href="./style.css?v=20260926-release1" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDF Clip", "url": "https://makiabe.github.io/PDFClip/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Web", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}, "description": "PDFの分割・ページ抽出・回転・不要ページの削除・JPG/PNG変換をブラウザ内で行える無料ツール。登録・インストール不要。", "featureList": ["PDFページ抽出", "1ページずつPDF分割・ZIP保存", "PDF回転", "不要ページ削除", "JPG・PNG一括変換", "ブラウザ内処理"]}</script>
+<script defer="" src="./core.js?v=20260926-release1"></script>
+<script defer="" src="./pdf-engine.js?v=20260926-release1"></script>
+<script defer="" src="./app.js?v=20260926-release1"></script>
 </head>
-<body>
-  <header class="app-header">
-    <div class="header-inner">
-      <a class="brand" href="#" aria-label="PDF Clip ホーム">
-        <div class="logo" aria-hidden="true">PDF</div>
-        <h1>PDF Clip</h1>
-      </a>
-      <nav class="top-nav" aria-label="ページ内ナビゲーション">
-        <a href="#">ホーム</a>
-        <a href="#howto">使い方</a>
-        <a href="#faq">よくある質問</a>
-        <a href="#privacy">プライバシー</a>
-      </nav>
-      <button id="helpButton" class="help-button" type="button" aria-label="PDF Clipについて"><span>?</span></button>
-    </div>
-  </header>
-
-  <main class="page">
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="hero-badge">無料・インストール不要・ブラウザで完結</div>
-        <h2>PDFから必要なページだけを<br>選んで、別のPDFとして保存</h2>
-        <p>PDFのページを選択して、必要なページだけを新しいPDFとして保存できるシンプルで使いやすい無料ツールです。ページの削除・回転・JPG/PNG変換もブラウザから簡単に行えます。</p>
-        <div class="hero-points">
-          <span><b>✓</b> 無料で使える</span>
-          <span><b>⚡</b> インストール不要</span>
-          <span><b>▣</b> サーバー送信なし</span>
-          <span><b>♡</b> シンプル操作</span>
-        </div>
-      </div>
-      <div class="hero-mascot" aria-label="PDF Clipの猫マスコット">
-        <div class="speech">ページを選んで<br>保存しよう！</div>
-        <div class="cat-face">🐱</div>
-        <div class="cat-cup">PDF<br>Clip</div>
-        <div class="paper-stack"><span>PDF</span></div>
-      </div>
-    </section>
-
-    <section class="tool-shell">
-      <div class="tool-main">
-        <section class="upload-card" id="dropZone">
-      <input type="file" id="fileInput" accept="application/pdf" hidden />
-      <div class="upload-icon" aria-hidden="true">PDF</div>
-      <div class="upload-copy">
-        <h2>PDFをドロップ</h2>
-        <p>またはクリックしてPDFを選択</p>
-      </div>
-      <button id="chooseButton" class="primary">PDFを選択</button>
-    </section>
-        <div class="option-preview">
-          <h3>設定オプション</h3>
-          <div class="option-columns">
-            <div><b>出力形式</b><span>PDF / JPG / PNG</span></div>
-            <div><b>生成件数</b><span>1つに結合 / 1ページずつ</span></div>
-            <div><b>ページ操作</b><span>回転 / 不要ページ削除</span></div>
-          </div>
-        </div>
-      </div>
-      <aside class="capabilities">
-        <div class="cap-head"><h3>できること</h3><span>いろいろな使い方に対応！</span></div>
-        <div class="cap-grid">
-          <div><b>必要なページだけ抽出</b><span>選んだページだけ保存</span></div>
-          <div><b>ページ番号で指定</b><span>範囲をまとめて選択</span></div>
-          <div><b>PDFを回転して保存</b><span>左右90°ずつ回転</span></div>
-          <div><b>不要ページを削除</b><span>いらないページを除外</span></div>
-          <div><b>JPG/PNGに一括変換</b><span>複数ページはZIP保存</span></div>
-          <div><b>ブラウザ内で処理</b><span>外部サーバーへ送信なし</span></div>
-        </div>
-      </aside>
-    </section>
-
-    <section id="workspace" class="workspace hidden">
-      <div class="file-toolbar card">
-        <div class="file-meta">
-          <div class="file-icon" aria-hidden="true">PDF</div>
-          <div>
-            <h2 id="fileName">選択したPDF</h2>
-            <p><span id="pageCount">0</span>ページ中 <strong id="selectedCount">0</strong>ページ選択中</p>
-          </div>
-        </div>
-
-        <div class="controls">
-          <button data-action="all">すべて選択</button>
-          <button data-action="none">選択解除</button>
-          <button data-action="odd">奇数</button>
-          <button data-action="even">偶数</button>
-          <button data-action="invert">反転</button>
-          <div class="range-row">
-            <input id="rangeInput" type="text" placeholder="例: 1-3, 5" aria-label="抽出するページ番号" />
-            <button id="rangeButton">指定</button>
-          </div>
-        </div>
-
-        <div class="download-actions">
-          <button id="downloadButton" class="download-btn" disabled><span id="downloadLabel">ページを選択してください</span></button>
-          <button id="splitButton" class="split-btn" disabled>選択ページを1ページずつ保存</button>
-          <button id="deleteButton" class="tool-btn danger-tool" disabled>選択ページを削除して保存</button>
-          <div class="tool-row">
-            <button id="rotateLeftButton" class="tool-btn" disabled>↶ 左90°回転</button>
-            <button id="rotateRightButton" class="tool-btn" disabled>↷ 右90°回転</button>
-          </div>
-          <div class="tool-row">
-            <button id="jpgButton" class="tool-btn" disabled>JPGに変換</button>
-            <button id="pngButton" class="tool-btn" disabled>PNGに変換</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="pages-card card">
-        <div class="section-head">
-          <h3>ページ一覧 <span>（クリックで選択 / 選択解除）</span></h3>
-          <p>拡大ボタンでプレビュー</p>
-        </div>
-        <div id="pageGrid" class="page-grid"></div>
-      </div>
-    </section>
-    <section class="seo-content">
-      <div class="info-card" id="privacy">
-        <h2>PDF Clipでできること</h2>
-        <p>PDF Clipは、PDFを開いてページを確認し、必要なページだけを選んで新しいPDFとして保存するためのシンプルなPDF分割・ページ抽出ツールです。「3、5、8ページだけ保存したい」「不要なページを除いてPDFを作り直したい」といった作業をすぐに行えます。</p>
-        <div class="feature-grid">
-          <div><h3>必要なページだけ抽出</h3><p>サムネイルを見ながら残したいページをクリックして選択できます。</p></div>
-          <div><h3>ページ番号で指定</h3><p>「1-3, 5, 8-10」のようにページ番号や範囲をまとめて指定できます。</p></div>
-          <div><h3>奇数・偶数を一括選択</h3><p>奇数ページ、偶数ページ、全ページの選択や選択状態の反転に対応しています。</p></div>
-          <div><h3>PDFを回転して保存</h3><p>選択したページを左・右へ90°ずつ回転し、その状態でPDFとして保存できます。</p></div>
-          <div><h3>不要ページを削除</h3><p>削除したいページを選択し、残りのページだけで新しいPDFを作成できます。</p></div>
-          <div><h3>JPG / PNGに一括変換</h3><p>選択したPDFページを画像に変換します。複数ページの場合はZIPにまとめてダウンロードします。</p></div>
-          <div><h3>ブラウザ内でPDFを処理</h3><p>PDFファイルを外部サーバーへ送信せず、ブラウザ内でページ抽出・変換・PDF生成を行います。</p></div>
-        </div>
-      </div>
-
-      <div class="info-card" id="howto">
-        <h2>使い方</h2>
-        <ol class="usage-list">
-          <li><b>PDFを選択</b><span>PDFファイルをドラッグ＆ドロップするか、「PDFを選択」から開きます。</span></li>
-          <li><b>必要なページを選択</b><span>ページ一覧から、新しいPDFに残したいページを選びます。</span></li>
-          <li><b>PDFとして保存</b><span>選択したページだけをまとめた新しいPDFをダウンロードします。</span></li>
-        </ol>
-      </div>
-
-      <div class="info-card faq" id="faq">
-        <h2>よくある質問</h2>
-        <details><summary>無料でPDFのページを分割できますか？</summary><p>はい。PDF Clipは無料で利用できます。必要なページを選択し、そのページだけを新しいPDFとして保存できます。</p></details>
-        <details><summary>PDFから特定のページだけを抽出できますか？</summary><p>はい。サムネイルからページを選ぶか、「1-3, 5」のようにページ番号を指定して抽出できます。</p></details>
-        <details><summary>PDFの不要なページを削除できますか？</summary><p>残したいページだけを選択して新しいPDFとして保存することで、不要なページを除外できます。元のPDFファイル自体は変更しません。</p></details>
-        <details><summary>PDFを1ページだけ保存できますか？</summary><p>はい。保存したい1ページだけを選択して、新しいPDFとしてダウンロードできます。</p></details>
-        <details><summary>PDFを1ページずつ分割して保存できますか？</summary><p>はい。分割したいページを選択し、「選択ページを1ページずつ保存」を押すと、各ページを個別のPDFファイルとしてまとめてダウンロードできます。</p></details>
-        <details><summary>PDFはサーバーにアップロードされますか？</summary><p>いいえ。PDFの読み込み、ページ表示、抽出、新しいPDFの生成はブラウザ内で行います。PDFファイルをPDF Clipのサーバーへアップロードする処理はありません。</p></details>
-        <details><summary>インストールや会員登録は必要ですか？</summary><p>必要ありません。対応ブラウザからそのまま利用でき、アカウント登録も不要です。</p></details>
-      </div>
-    </section>
-  </main>
-
-  <div id="helpDialog" class="help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-    <div class="help-dialog">
-    <button id="closeHelp" class="close-preview" aria-label="説明を閉じる">×</button>
-    <div class="help-heading">
-      <div class="help-heading-icon" aria-hidden="true">PDF</div>
-      <div>
-        <h2 id="helpTitle">PDF Clipについて</h2>
-        <p class="help-lead">必要なページだけを、かんたんに切り出せます。</p>
-      </div>
-    </div>
-    <div class="help-section">
-      <h3>使い方</h3>
-      <div class="help-steps">
-        <div><b>1</b><span>PDFを選択</span></div>
-        <div><b>2</b><span>残したいページを選択</span></div>
-        <div><b>3</b><span>新しいPDFとして保存</span></div>
-      </div>
-    </div>
-    <div class="help-section help-safety">
-      <h3>ファイルの取り扱い</h3>
-      <p>PDFの処理はすべてこのブラウザ内で行います。PDFファイルをサーバーへ送信することはありません。</p>
-    </div>
-    <p class="help-note">インストール・アカウント登録は不要です。</p>
-    </div>
-  </div>
-
-  <dialog id="previewDialog">
-    <button id="closePreview" class="close-preview" aria-label="プレビューを閉じる">×</button>
-    <canvas id="previewCanvas"></canvas>
-    <div id="previewCaption"></div>
-  </dialog>
-
-  <script type="module" src="./app.js"></script>
-</body>
+<body id="home">
+<svg aria-hidden="true" class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="i-document" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></symbol><symbol id="i-upload" viewbox="0 0 24 24"><path d="M7 18H6a4 4 0 0 1-.7-7.94 7 7 0 0 1 13.4 0A4 4 0 0 1 18 18h-1M12 22V10m-4 4 4-4 4 4"></path></symbol><symbol id="i-shield" viewbox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"></path><path d="m8 12 3 3 5-5"></path></symbol><symbol id="i-bolt" viewbox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-12h-7z"></path></symbol><symbol id="i-lock" viewbox="0 0 24 24"><rect height="11" rx="2" width="14" x="5" y="10"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"></path></symbol><symbol id="i-heart" viewbox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"></path></symbol><symbol id="i-gear" viewbox="0 0 24 24"><path d="m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h6l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z"></path><circle cx="12" cy="12" r="3"></circle></symbol><symbol id="i-sparkles" viewbox="0 0 24 24"><path d="m10 3 2.5 6.5L19 12l-6.5 2.5L10 21l-2.5-6.5L1 12l6.5-2.5Z M20 2v5m-2.5-2.5h5"></path></symbol><symbol id="i-list" viewbox="0 0 24 24"><path d="M10 6h11M10 12h11M10 18h11M3 3h1v6M2 12c0-2 4-2 4 0 0 1-4 3-4 3h4M2 18h4l-2 2h2c0 2-4 2-4 0"></path></symbol><symbol id="i-rotate" viewbox="0 0 24 24"><path d="M20 8V3m0 5h-5M20 8a8.5 8.5 0 1 0 .5 7"></path></symbol><symbol id="i-left" viewbox="0 0 24 24"><path d="M4 8V3m0 5h5M4 8a8.5 8.5 0 1 1-.5 7"></path></symbol><symbol id="i-delete" viewbox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"></path></symbol><symbol id="i-image" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="3"></rect><circle cx="8" cy="8" r="1.5"></circle><path d="m3 17 6-6 4 4 3-3 5 5"></path></symbol><symbol id="i-window" viewbox="0 0 24 24"><rect height="16" rx="2" width="18" x="3" y="4"></rect><path d="M3 9h18M7 6.5h.01M10 6.5h.01"></path></symbol><symbol id="i-moon" viewbox="0 0 24 24"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"></path></symbol><symbol id="i-sun" viewbox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></symbol><symbol id="i-chevron" viewbox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></symbol><symbol id="i-down" viewbox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></symbol><symbol id="i-close" viewbox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"></path></symbol><symbol id="i-zoom" viewbox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5M10.5 7.5v6m-3-3h6"></path></symbol><symbol id="i-download" viewbox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"></path></symbol></defs></svg>
+<a class="skip-link" href="#tool">PDFツールへ移動</a>
+<div class="site-shell">
+<header class="site-header">
+<div class="header-inner">
+<a aria-label="PDF Clip ホーム" class="brand" href="#home"><span class="brand-mark"><svg aria-hidden="true" class="icon" focusable="false" viewBox="0 0 24 24"><path d="M5 10h13M5 14h13M5 18h9"></path></svg></span><span>PDF Clip</span></a>
+<nav aria-label="メインナビゲーション" class="top-nav"><a class="is-active" href="#home">ホーム</a><a data-open="howto" href="#howto">使い方</a><a data-open="faq" href="#faq">よくある質問</a><a href="#privacy">プライバシー</a></nav>
+<div class="header-actions"><button aria-label="ダークモードに切り替え" aria-pressed="false" class="theme-button" id="themeButton" type="button"><svg aria-hidden="true" class="icon moon-icon" focusable="false"><use href="#i-moon"></use></svg><svg aria-hidden="true" class="icon sun-icon" focusable="false"><use href="#i-sun"></use></svg></button></div>
+</div>
+</header>
+<main class="page">
+<section aria-labelledby="mainTitle" class="hero"><div aria-hidden="true" class="hero-ambience"></div>
+<div class="hero-copy">
+<span class="hero-badge">無料・インストール不要・ブラウザで完結</span>
+<h1 id="mainTitle">PDFから必要なページだけを<br class="hero-break"/>選んで、別のPDFとして保存</h1>
+<p class="hero-description">PDFのページを選択して、必要なページだけを新しいPDFとして保存できるシンプルで使いやすい無料ツールです。ページの削除・回転・JPG/PNG変換も、ブラウザから簡単に行えます。</p>
+<div class="hero-points">
+<div><span class="point-icon green"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-shield"></use></svg></span><span><b>無料で使える</b><small>登録不要</small></span></div>
+<div><span class="point-icon purple"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-bolt"></use></svg></span><span><b>インストール不要</b><small>ブラウザで完結</small></span></div>
+<div><span class="point-icon gray"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-lock"></use></svg></span><span><b>サーバー送信なし</b><small>端末内で処理</small></span></div>
+<div><span class="point-icon pink"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-heart"></use></svg></span><span><b>シンプルで使いやすい</b><small>すぐに使えるUI</small></span></div>
+</div>
+</div>
+<img alt="PDF Clipのマグカップを持つ猫と、ページを選択するPDF書類" class="hero-cat" decoding="async" fetchpriority="high" height="312" src="./assets/hero-scene.webp" width="656"/>
+</section>
+<section aria-label="PDF編集ツール" class="tool-layout" id="tool">
+<div class="tool-panel panel" id="toolPanel">
+<input accept=".pdf,application/pdf" hidden="" id="fileInput" type="file"/>
+<button aria-describedby="fileNotice" class="dropzone" id="dropZone" type="button">
+<svg aria-hidden="true" class="icon upload-icon" focusable="false"><use href="#i-upload"></use></svg>
+<span class="drop-copy" id="emptyFile"><strong>PDFファイルをドラッグ＆ドロップ</strong><span>または <b>クリックしてファイルを選択</b></span></span>
+<span class="loaded-file" hidden="" id="loadedFile"><span class="file-badge"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-document"></use></svg><strong id="fileName"></strong><small id="fileSize"></small></span><span class="replace-copy">別のPDFを開くにはクリック、またはドロップ</span></span>
+<span class="file-notice" id="fileNotice">対応形式：PDF（最大100MB）<br/>※ ファイルはブラウザ内で処理され、サーバーには送信されません。</span>
+</button>
+<p aria-live="polite" class="status-message" hidden="" id="loadStatus" role="status"></p>
+<section aria-labelledby="pagesTitle" class="workspace" hidden="" id="workspace">
+<div class="workspace-title"><h2 id="pagesTitle"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-list"></use></svg>ページを選択</h2><button class="text-button" id="clearFile" type="button">PDFを閉じる</button></div>
+<p class="selection-hint" id="selectionHint">保存したいページにチェックを付けてください。</p>
+<div class="selection-toolbar">
+<div aria-label="ページの一括選択" class="quick-select"><button data-select="all" type="button">すべて</button><button data-select="none" type="button">解除</button><button data-select="odd" type="button">奇数</button><button data-select="even" type="button">偶数</button><button data-select="invert" type="button">反転</button></div>
+<div class="range-control"><label class="sr-only" for="rangeInput">ページ番号で選択</label><input autocomplete="off" id="rangeInput" placeholder="例：1-3, 5, 8" spellcheck="false" type="text"/><button id="rangeButton" type="button">指定</button></div>
+</div>
+<p class="field-error" hidden="" id="rangeError" role="alert"></p>
+<div class="selection-summary"><span aria-live="polite" id="selectionCount"></span><span id="outputCount"></span></div>
+<div aria-label="PDFページ一覧" class="page-grid" id="pageGrid"></div>
+<div class="pagination" hidden="" id="pagination"><button id="previousPages" type="button">前のページ</button><span id="pageWindowLabel"></span><button id="nextPages" type="button">次のページ</button></div>
+<p class="workspace-note">表示番号はPDFの先頭から数えたページ番号です。回転ボタンで1ページずつ調整できます。</p>
+</section>
+<section aria-labelledby="optionsTitle" class="options-section">
+<h2 id="optionsTitle"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-gear"></use></svg>設定オプション</h2>
+<div class="option-grid" id="optionGrid">
+<fieldset><legend class="sr-only">出力形式</legend><div class="option-heading">出力形式 <small>（複数選択可）</small><button aria-label="出力形式の説明" class="help-button" data-help="formats" type="button">?</button></div>
+<label class="option"><input checked="" id="formatPdf" name="format" type="checkbox" value="pdf"/><span>PDF<small>（標準）</small></span></label>
+<label class="option"><input id="formatJpg" name="format" type="checkbox" value="jpg"/><span>JPG画像<small>（各ページを画像に変換）</small></span></label>
+<label class="option"><input id="formatPng" name="format" type="checkbox" value="png"/><span>PNG画像<small>（各ページを画像に変換）</small></span></label>
+</fieldset>
+<fieldset id="countOptions"><legend class="sr-only">生成件数</legend><div class="option-heading">生成件数<button aria-label="生成件数の説明" class="help-button" data-help="count" type="button">?</button></div>
+<label class="option"><input checked="" name="pdfMode" type="radio" value="merged"/><span>1件<small>（選択したページを1つのPDFに）</small></span></label>
+<label class="option"><input name="pdfMode" type="radio" value="split"/><span>複数<small>（1ページずつ分割して複数PDF）</small></span></label>
+<p class="count-note" hidden="" id="countNote">画像は1ページずつ生成します。</p>
+</fieldset>
+<fieldset><legend class="sr-only">ページ操作</legend><div class="option-heading">ページ操作<button aria-label="回転と削除の説明" class="help-button" data-help="operations" type="button">?</button></div>
+<div class="rotation-row"><label class="option"><input id="rotateEnabled" type="checkbox"/><span>ページを回転する</span></label><select disabled="" id="rotationSelect"><option value="90">右に90°</option><option value="270">左に90°</option><option value="180">180°</option></select></div>
+<label class="sr-only" for="rotationSelect">保存する全ページに追加する回転角度</label>
+<label class="option"><input id="deleteMode" type="checkbox"/><span>不要ページを削除する</span></label>
+</fieldset>
+</div>
+</section>
+<div class="generate-area">
+<button class="primary-button" id="generateButton" type="button"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-document"></use></svg><span id="generateLabel">PDFを生成</span><svg aria-hidden="true" class="icon button-arrow" focusable="false"><use href="#i-chevron"></use></svg></button>
+<p class="export-summary" hidden="" id="exportSummary">PDFを選択してから、保存したいページを選んでください。</p>
+<div class="progress-area" hidden="" id="progressArea"><progress aria-label="ファイル生成の進捗" id="exportProgress" max="100" value="0"></progress><button class="text-button" id="cancelExport" type="button">中止する</button></div>
+<p aria-live="polite" class="status-message" hidden="" id="exportStatus" role="status"></p>
+<a class="download-again" hidden="" id="downloadAgain"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-download"></use></svg>生成したファイルをもう一度ダウンロード</a>
+</div>
+<noscript><p class="status-message error">PDFの処理にはJavaScriptが必要です。ブラウザの設定で有効にしてください。</p></noscript>
+</div>
+<aside aria-labelledby="featuresTitle" class="features-panel panel"><div class="section-heading"><h2 id="featuresTitle"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-sparkles"></use></svg>できること</h2><span>いろいろな使い方に対応！</span></div><div class="feature-grid"><article class="feature-card"><span class="feature-icon"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-document"></use></svg></span><div><h3>必要なページだけ<br/>抽出</h3><p>チェックで選ぶだけでかんたんに抽出</p></div></article><article class="feature-card"><span class="feature-icon"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-list"></use></svg></span><div><h3>ページ番号で指定</h3><p>指定したページ範囲をまとめて選択</p></div></article><article class="feature-card"><span class="feature-icon"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-rotate"></use></svg></span><div><h3>PDFを回転して保存</h3><p>90度ずつ回転して正しい向きで保存</p></div></article><article class="feature-card"><span class="feature-icon"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-delete"></use></svg></span><div><h3>不要ページを削除</h3><p>いらないページを除いてスッキリ保存</p></div></article><article class="feature-card"><span class="feature-icon"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-image"></use></svg></span><div><h3>JPG/PNGに一括変換</h3><p>PDFの各ページを画像として書き出し</p></div></article><article class="feature-card"><span class="feature-icon"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-window"></use></svg></span><div><h3>ブラウザ内でPDFを処理</h3><p>ファイルはアップロードされず、端末内で処理</p></div></article></div></aside>
+</section>
+<section aria-labelledby="privacyTitle" class="privacy-panel panel" id="privacy">
+<span class="privacy-icon"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-lock"></use></svg></span>
+<div class="privacy-copy"><h2 id="privacyTitle">あなたのファイルは、どこにも送信されません</h2><p>PDF Clip は、PDFの処理をブラウザ内で行います。<br/>アップロード不要で、あなたのPDFファイルがサーバーに送信されることはありません。</p></div>
+<img alt="プライバシーもしっかり守るにゃ！と話す猫" class="privacy-cat" height="134" src="./assets/privacy-scene.webp" width="441"/>
+</section>
+</main>
+<footer class="site-footer"><div><b>PDF Clip</b><span class="version">v1.2</span><span class="footer-rule"></span><span>PDFをもっと、シンプルに。</span></div></footer>
+</div>
+<dialog aria-labelledby="helpTitle" class="help-dialog" id="helpDialog"><div class="dialog-header"><h2 id="helpTitle">PDF Clipについて</h2><button aria-label="説明を閉じる" class="icon-button" data-close="helpDialog" type="button"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-close"></use></svg></button></div><div class="help-body" id="helpBody"></div><button class="secondary-button" data-close="helpDialog" type="button">閉じる</button></dialog>
+<dialog aria-labelledby="previewTitle" class="preview-dialog" id="previewDialog"><div class="dialog-header"><h2 id="previewTitle">ページプレビュー</h2><button aria-label="プレビューを閉じる" class="icon-button" data-close="previewDialog" type="button"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-close"></use></svg></button></div><div class="preview-body" id="previewBody"></div></dialog>
+<template id="pageTemplate"><article class="page-card"><label class="page-select"><span class="page-card-header"><span class="page-number"></span><input class="page-checkbox" type="checkbox"/></span><span class="thumb-wrap"><span class="thumb-status">読み込み中…</span></span></label><div class="page-card-footer"><span class="page-state"></span><div class="page-actions"><button class="icon-button" data-page-action="left" type="button"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-left"></use></svg></button><button class="icon-button" data-page-action="right" type="button"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-rotate"></use></svg></button><button class="icon-button" data-page-action="preview" type="button"><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-zoom"></use></svg></button></div></div></article></template>
+<dialog aria-labelledby="guideTitle" aria-modal="true" class="info-dialog" id="howto"><div class="dialog-header"><h2 id="guideTitle">かんたん3ステップの使い方</h2><button aria-label="閉じる" class="icon-button" data-close="howto" type="button"><svg aria-hidden="true" class="icon"><use href="#i-close"></use></svg></button></div><ol class="steps"><li><b>1</b><div><h3>PDFを選択</h3><p>ファイルをドロップ、またはクリックしてPDFを開きます。</p></div></li><li><b>2</b><div><h3>ページと形式を選ぶ</h3><p>必要なページと、PDF・JPG・PNGなどの出力形式を選びます。</p></div></li><li><b>3</b><div><h3>生成して保存</h3><p>生成ボタンで保存します。複数ファイルはZIPにまとまります。</p></div></li></ol></dialog><dialog aria-labelledby="faqTitle" aria-modal="true" class="info-dialog" id="faq"><div class="dialog-header"><h2 id="faqTitle">よくある質問</h2><button aria-label="閉じる" class="icon-button" data-close="faq" type="button"><svg aria-hidden="true" class="icon"><use href="#i-close"></use></svg></button></div><div class="faq-list"><details><summary><span>無料でPDFの分割・ページ抽出ができますか？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>はい。無料で利用できます。インストールや会員登録も不要です。必要なページを選ぶと、選択したページを1つのPDFにまとめて保存できます。</p></details><details><summary><span>PDFを1ページずつ分割して、一括保存できますか？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>出力形式で「PDF」、生成件数で「複数」を選んでください。選択した各ページを個別のPDFにし、複数ファイルになる場合はZIPにまとめてダウンロードします。</p></details><details><summary><span>不要なページを削除するには？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>「不要ページを削除する」をオンにすると、赤いチェックのページが削除対象になります。選択されていないページだけで新しいファイルを作成します。モード切り替え時は保存対象のページが変わらないよう選択状態が反転します。元のPDFは上書きしません。</p></details><details><summary><span>ページを回転して保存できますか？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>はい。ページ一覧の回転ボタンで個別に回転できます。「ページを回転する」をオンにすると、保存対象の全ページに、指定した右90°・左90°・180°の回転を追加できます。PDF、分割PDF、JPG・PNGにも同じ向きで反映されます。</p></details><details><summary><span>PDFをJPGやPNGに変換できますか？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>出力形式で「JPG画像」または「PNG画像」を選んでください。複数形式の同時選択も可能です。1ファイルなら直接ダウンロード、複数ファイルならZIPで保存します。画像は通常144dpi相当で生成し、非常に大きなページはブラウザの負荷を抑えるため縮小します。</p></details><details><summary><span>PDFファイルは外部に送信されますか？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>PDFの読み込み・表示・変換はブラウザ内で行い、PDFの内容やファイル名をサーバーに送信する処理はありません。ページの表示や処理用ライブラリの取得には通信を使います。画面配色の設定以外はブラウザの保存領域に記録しません。重要な文書はご自身の利用環境や組織のルールをご確認ください。</p></details><details><summary><span>対応するPDF・ファイルサイズは？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>1ファイル100MBまでです。実際に処理できる大きさやページ数は端末のメモリとブラウザに依存します。パスワード付き・暗号化されたPDFには対応していません。電子署名や特殊なフォームなどは保持できない場合があるため、保存結果をご確認ください。</p></details><details><summary><span>選択したページはどの順番で保存されますか？</span><svg aria-hidden="true" class="icon" focusable="false"><use href="#i-down"></use></svg></summary><p>元のPDFのページ順で保存します。「8, 3, 5」と指定した場合も、3、5、8ページの順です。ページ一覧の番号はPDFの先頭から数えた位置で、紙面に印字された番号とは異なる場合があります。</p></details></div></dialog></body>
 </html>

@@ -35,30 +35,45 @@
 </head>
 <body>
   <header class="app-header">
-    <div class="brand">
-      <div class="logo" aria-hidden="true">PDF</div>
-      <div>
+    <div class="header-inner">
+      <a class="brand" href="#" aria-label="PDF Clip ホーム">
+        <div class="logo" aria-hidden="true">PDF</div>
         <h1>PDF Clip</h1>
-        <p>PDFから必要なページだけを選んで、別のPDFとして保存</p>
-      </div>
-    </div>
-    <div class="header-actions">
-      <div class="privacy-badge">サーバー送信なし・端末内で完結</div>
-      <button id="helpButton" class="help-button" type="button" aria-label="PDF Clipについて" title="使い方を見る">
-        <span aria-hidden="true">?</span>
-      </button>
+      </a>
+      <nav class="top-nav" aria-label="ページ内ナビゲーション">
+        <a href="#">ホーム</a>
+        <a href="#howto">使い方</a>
+        <a href="#faq">よくある質問</a>
+        <a href="#privacy">プライバシー</a>
+      </nav>
+      <button id="helpButton" class="help-button" type="button" aria-label="PDF Clipについて"><span>?</span></button>
     </div>
   </header>
 
   <main class="page">
-    <section class="seo-intro" aria-labelledby="mainTitle">
-      <h2 id="mainTitle">PDFから必要なページだけを選んで、別のPDFとして保存</h2>
-      <p>PDFのページを選択して、必要なページだけを新しいPDFとして保存できる無料ツールです。PDFの分割・ページ抽出・不要ページの削除・回転・JPG/PNG変換をブラウザから簡単に行えます。</p>
-      <div class="benefits" aria-label="PDF Clipの特徴">
-        <span>無料</span><span>インストール不要</span><span>登録不要</span><span>サーバー送信なし</span>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="hero-badge">無料・インストール不要・ブラウザで完結</div>
+        <h2>PDFから必要なページだけを<br>選んで、別のPDFとして保存</h2>
+        <p>PDFのページを選択して、必要なページだけを新しいPDFとして保存できるシンプルで使いやすい無料ツールです。ページの削除・回転・JPG/PNG変換もブラウザから簡単に行えます。</p>
+        <div class="hero-points">
+          <span><b>✓</b> 無料で使える</span>
+          <span><b>⚡</b> インストール不要</span>
+          <span><b>▣</b> サーバー送信なし</span>
+          <span><b>♡</b> シンプル操作</span>
+        </div>
+      </div>
+      <div class="hero-mascot" aria-label="PDF Clipの猫マスコット">
+        <div class="speech">ページを選んで<br>保存しよう！</div>
+        <div class="cat-face">🐱</div>
+        <div class="cat-cup">PDF<br>Clip</div>
+        <div class="paper-stack"><span>PDF</span></div>
       </div>
     </section>
-    <section class="upload-card" id="dropZone">
+
+    <section class="tool-shell">
+      <div class="tool-main">
+        <section class="upload-card" id="dropZone">
       <input type="file" id="fileInput" accept="application/pdf" hidden />
       <div class="upload-icon" aria-hidden="true">PDF</div>
       <div class="upload-copy">
@@ -66,6 +81,27 @@
         <p>またはクリックしてPDFを選択</p>
       </div>
       <button id="chooseButton" class="primary">PDFを選択</button>
+    </section>
+        <div class="option-preview">
+          <h3>設定オプション</h3>
+          <div class="option-columns">
+            <div><b>出力形式</b><span>PDF / JPG / PNG</span></div>
+            <div><b>生成件数</b><span>1つに結合 / 1ページずつ</span></div>
+            <div><b>ページ操作</b><span>回転 / 不要ページ削除</span></div>
+          </div>
+        </div>
+      </div>
+      <aside class="capabilities">
+        <div class="cap-head"><h3>できること</h3><span>いろいろな使い方に対応！</span></div>
+        <div class="cap-grid">
+          <div><b>必要なページだけ抽出</b><span>選んだページだけ保存</span></div>
+          <div><b>ページ番号で指定</b><span>範囲をまとめて選択</span></div>
+          <div><b>PDFを回転して保存</b><span>左右90°ずつ回転</span></div>
+          <div><b>不要ページを削除</b><span>いらないページを除外</span></div>
+          <div><b>JPG/PNGに一括変換</b><span>複数ページはZIP保存</span></div>
+          <div><b>ブラウザ内で処理</b><span>外部サーバーへ送信なし</span></div>
+        </div>
+      </aside>
     </section>
 
     <section id="workspace" class="workspace hidden">
@@ -114,7 +150,7 @@
       </div>
     </section>
     <section class="seo-content">
-      <div class="info-card">
+      <div class="info-card" id="privacy">
         <h2>PDF Clipでできること</h2>
         <p>PDF Clipは、PDFを開いてページを確認し、必要なページだけを選んで新しいPDFとして保存するためのシンプルなPDF分割・ページ抽出ツールです。「3、5、8ページだけ保存したい」「不要なページを除いてPDFを作り直したい」といった作業をすぐに行えます。</p>
         <div class="feature-grid">
@@ -128,7 +164,7 @@
         </div>
       </div>
 
-      <div class="info-card">
+      <div class="info-card" id="howto">
         <h2>使い方</h2>
         <ol class="usage-list">
           <li><b>PDFを選択</b><span>PDFファイルをドラッグ＆ドロップするか、「PDFを選択」から開きます。</span></li>
@@ -137,7 +173,7 @@
         </ol>
       </div>
 
-      <div class="info-card faq">
+      <div class="info-card faq" id="faq">
         <h2>よくある質問</h2>
         <details><summary>無料でPDFのページを分割できますか？</summary><p>はい。PDF Clipは無料で利用できます。必要なページを選択し、そのページだけを新しいPDFとして保存できます。</p></details>
         <details><summary>PDFから特定のページだけを抽出できますか？</summary><p>はい。サムネイルからページを選ぶか、「1-3, 5」のようにページ番号を指定して抽出できます。</p></details>

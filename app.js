@@ -225,7 +225,7 @@
   });
   $('cancelExport').addEventListener('click', () => { state.exportController?.abort(); $('cancelExport').disabled = true; message('exportStatus', '現在のページの処理が終わり次第、中止します…'); });
 
-  // Help and theme remain usable even when the PDF libraries cannot be loaded.
+  // Help and navigation remain usable even when the PDF libraries cannot be loaded.
   const help = {
     about: ['PDF Clipについて', '<p>PDFから必要なページだけを選んで、別のPDFとして保存できる無料ツールです。</p><ol><li>PDFファイルを選択します。</li><li>保存するページと出力形式を選びます。</li><li>生成ボタンを押すとダウンロードできます。</li></ol><p>PDFの分割・回転・不要ページの削除・JPG/PNG画像への変換に対応しています。PDFファイルは外部サーバーに送信しません。</p>'],
     formats: ['出力形式について', '<p><b>PDF</b>は、選択したページを新しいPDFとして保存します。</p><p><b>JPG・PNG</b>は、1ページごとに画像を生成します。複数の形式を同時に選ぶこともできます。</p><p>生成するファイルが1つなら直接保存、2つ以上ならZIPにまとめます。複数形式の場合は、ZIP内の形式別フォルダーに分かれます。</p>'],
@@ -264,17 +264,6 @@
       $('previewBody').replaceChildren(canvas);
     } catch (error) { if (!controller.signal.aborted) $('previewBody').textContent = 'このページのプレビューを表示できませんでした。'; }
   }
-  function setTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    $('themeButton').setAttribute('aria-pressed', String(theme === 'dark'));
-    $('themeButton').setAttribute('aria-label', theme === 'dark' ? 'ライトモードに切り替え' : 'ダークモードに切り替え');
-    document.querySelector('meta[name=theme-color]').content = theme === 'dark' ? '#171622' : '#f4f8ff';
-  }
-  try { setTheme(localStorage.getItem('pdfclip-theme') === 'dark' ? 'dark' : 'light'); } catch { setTheme('light'); }
-  $('themeButton').addEventListener('click', () => {
-    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; setTheme(theme);
-    try { localStorage.setItem('pdfclip-theme', theme); } catch { /* No PDF data is stored. */ }
-  });
   document.querySelectorAll('.top-nav a').forEach(link => link.addEventListener('click', () => {
     document.querySelectorAll('.top-nav a').forEach(a => a.classList.toggle('is-active', a === link));
   }));
